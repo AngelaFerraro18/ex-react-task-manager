@@ -46,3 +46,26 @@
 .task-list-title {
     margin: 20px 0;
 }
+
+/* add-tasks */
+
+.form-style {
+    display: flex;
+    max-width: 300px;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.select-style {
+    width: 100px;
+    padding: 5px;
+}
+
+.padding {
+    padding: 10px;
+}
+
+.btn-submit {
+    padding: 5px;
+    width: 100px;
+}

@@ -34,25 +34,25 @@ function AddTask() {
     }
 
     return (<>
-        <h2>Aggiungi una task!</h2>
+        <h2 className="task-list-title">Aggiungi una task!</h2>
 
-        <form onSubmit={handleForm}>
-            <input type="text"
+        <form className="form-style" onSubmit={handleForm}>
+            <input className="padding" type="text"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 placeholder="Nome della task" />
 
-            <textarea
+            <textarea className="padding"
                 ref={descriptionRef}
                 placeholder="Aggiungi una descrizione..."></textarea>
 
-            <select ref={statusRef}>
+            <select className="select-style" ref={statusRef}>
                 <option value="">To do</option>
                 <option value="to-do">To Do</option>
                 <option value="doing">Doing</option>
                 <option value="done">Done</option>
             </select>
-            <button type="submit">Aggiungi Task</button>
+            <button className="btn-submit" type="submit">Aggiungi Task</button>
         </form>
     </>)
 }
