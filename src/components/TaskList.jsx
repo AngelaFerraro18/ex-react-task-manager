@@ -1,10 +1,11 @@
-import { useContext } from "react";
-import { GlobalContext } from "../context/GlobalContext";
+// import { useContext } from "react";
+// import { GlobalContext } from "../context/GlobalContext";
 import TaskRow from "./TaskRow";
+import { useGlobalContext } from "../context/GlobalContext";
 
 function TaskList() {
 
-    const { tasks } = useContext(GlobalContext);
+    const { tasks } = useGlobalContext();
 
     return (<>
         <h2 className="task-list-title">Lista delle task:</h2>

@@ -1,6 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 const symbols = "!@#$%^&*()-_=+[]{}|;:'\\,.<>?/`~";
-import useTasks from "../hooks/useTasks";
+// import useTasks from "../hooks/useTasks";
+import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../context/GlobalContext";
 
 function AddTask() {
     // input title controllato
@@ -13,7 +15,9 @@ function AddTask() {
     const statusRef = useRef();
 
     //importo la funzione addTask()
-    const { addTask } = useTasks();
+    const { addTask } = useGlobalContext();
+
+    const navigate = useNavigate();
 
     async function handleForm(e) {
         e.preventDefault();
@@ -28,7 +32,7 @@ function AddTask() {
         }
 
         const description = descriptionRef.current.value;
-        const status = statusRef.current.value;
+        const status = statusRef.current.value.trim();
 
         console.log({
             title,
@@ -43,8 +47,9 @@ function AddTask() {
             setTitle('');
             descriptionRef.current.value = '';
             statusRef.current.value = '';
+            navigate('/');
         } else {
-            alert("C'è stato un errore nell'aggiunta della task!", res.error.message)
+            alert("C'è stato un errore nell'aggiunta della task!", res.message)
         }
 
     }
@@ -62,8 +67,8 @@ function AddTask() {
                 ref={descriptionRef}
                 placeholder="Aggiungi una descrizione..."></textarea>
 
-            <select className="select-style" ref={statusRef} defaultValue={'To Do'}>
-                <option value="To Do">To Do</option>
+            <select className="select-style" ref={statusRef} defaultValue={"To do"}>
+                <option value="To do">To do</option>
                 <option value="Doing">Doing</option>
                 <option value="Done">Done</option>
             </select>

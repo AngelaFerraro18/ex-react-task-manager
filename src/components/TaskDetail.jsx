@@ -1,15 +1,17 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { GlobalContext } from "../context/GlobalContext";
-import useTasks from "../hooks/useTasks";
+import { useGlobalContext } from "../context/GlobalContext";
+// import useTasks from "../hooks/useTasks";
+import Modal from "./Modal";
 
 function TaskDetail() {
     const { id } = useParams();
-    const { tasks } = useContext(GlobalContext);
+    const { tasks, removeTask } = useGlobalContext();
 
-    //importo la funzione removeTask
-    const { removeTask } = useTasks();
     const navigate = useNavigate();
+
+    //imposto una variabile di stato per la gestione della modale
+    const [modal, setModal] = useState(false);
 
     const task = tasks.find(t => t.id === parseInt(id));
 
@@ -34,7 +36,16 @@ function TaskDetail() {
         <p>{task.status}</p>
         <p>{new Date(task.createdAt).toLocaleDateString()}</p>
 
-        <button onClick={deleteTask}>Elimina task</button>
+        <button onClick={() => setModal(true)}>Elimina task</button>
+
+        <Modal
+            title="Conferma l'eliminazione"
+            content="Sei sicuro di voler cancellare questa task?"
+            show={modal}
+            onClose={() => setModal(false)}
+            onConfirm={deleteTask}
+            confirmText="Elimina"
+        />
     </>)
 }
 

@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 
 function TaskRow({ task }) {
 
-    const { title, status, createdAt, description } = task;
+    const { title, status, createdAt } = task;
 
     const statusStyle = {
         backgroundColor:
             status === 'To do' ? 'red' : status === 'Doing' ? 'yellow' : status === 'Done' ? 'green' : 'transparent'
     }
 
-    return (<>
+    return (
         <div className="header-table">
 
             <div className="cell-table"><Link to={`/task/${task.id}`}>{title}</Link></div>
@@ -20,7 +20,7 @@ function TaskRow({ task }) {
             <div className="cell-table">{createdAt}</div>
 
         </div>
-    </>)
+    )
 }
 
 export default React.memo(TaskRow);

@@ -24,8 +24,13 @@ function useTasks() {
                 title,
                 description,
                 status
-            })
-            return { success: true, task: response.data }
+            });
+
+            const newTask = response.data;
+
+            setTasks(prev => [...prev, newTask]);
+            console.log(response);
+            return { success: true, task: newTask }
         } catch (error) {
             console.error("Si è verificato un errore nella creazione della task", error);
             return { success: false, message: error.response?.data };
@@ -36,7 +41,8 @@ function useTasks() {
 
     async function removeTask(id) {
         try {
-            await axios.delete(`${url}/tasks/${id}`)
+            await axios.delete(`${url}/tasks/${id}`);
+            setTasks(prev => prev.filter(t => t.id !== id))
             return { success: true }
         } catch (error) {
             console.error('Qualcosa è andato storto', error.response?.message);
