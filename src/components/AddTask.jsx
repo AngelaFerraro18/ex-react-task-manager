@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 const symbols = "!@#$%^&*()-_=+[]{}|;:'\\,.<>?/`~";
+import useTasks from "../hooks/useTasks";
 
 function AddTask() {
     // input title controllato
@@ -11,7 +12,10 @@ function AddTask() {
     // status con useRef 
     const statusRef = useRef();
 
-    function handleForm(e) {
+    //importo la funzione addTask()
+    const { addTask } = useTasks();
+
+    async function handleForm(e) {
         e.preventDefault();
         if (!title) {
             console.error('Il campo non può essere vuoto!');
@@ -31,6 +35,18 @@ function AddTask() {
             description,
             status
         })
+
+        const res = await addTask({ title, description, status });
+
+        if (res.success) {
+            alert('Task aggiunta con successo!');
+            setTitle('');
+            descriptionRef.current.value = '';
+            statusRef.current.value = '';
+        } else {
+            alert("C'è stato un errore nell'aggiunta della task!", res.error.message)
+        }
+
     }
 
     return (<>
@@ -46,11 +62,10 @@ function AddTask() {
                 ref={descriptionRef}
                 placeholder="Aggiungi una descrizione..."></textarea>
 
-            <select className="select-style" ref={statusRef}>
-                <option value="">To do</option>
-                <option value="to-do">To Do</option>
-                <option value="doing">Doing</option>
-                <option value="done">Done</option>
+            <select className="select-style" ref={statusRef} defaultValue={'To Do'}>
+                <option value="To Do">To Do</option>
+                <option value="Doing">Doing</option>
+                <option value="Done">Done</option>
             </select>
             <button className="btn-submit" type="submit">Aggiungi Task</button>
         </form>

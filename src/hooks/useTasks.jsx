@@ -15,16 +15,27 @@ function useTasks() {
             .catch(err => console.error(err));
     }, []);
 
-    return [tasks, setTasks];
 
     // funzione addTask 
-    function addTask() {
-        return
+    async function addTask({ title, description, status }) {
+        console.log('Dati che sto inviando:', { title, description, status })
+        try {
+            const response = await axios.post(`${url}/tasks`, {
+                title,
+                description,
+                status
+            })
+            return { success: true, task: response.data }
+        } catch (error) {
+            console.error("Si è verificato un errore nella creazione della task", error);
+            return { success: false, message: error.response?.data };
+        }
     };
 
     // funzione removeTask
 
     function removeTask() {
+
         return
     };
 
@@ -32,6 +43,9 @@ function useTasks() {
     function updateTask() {
         return
     };
+
+
+    return { tasks, setTasks, addTask };
 }
 
 export default useTasks;
