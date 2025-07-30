@@ -34,9 +34,15 @@ function useTasks() {
 
     // funzione removeTask
 
-    function removeTask() {
+    async function removeTask(id) {
+        try {
+            await axios.delete(`${url}/tasks/${id}`)
+            return { success: true }
+        } catch (error) {
+            console.error('Qualcosa è andato storto', error.response?.message);
+            return { success: false, message: error.response?.message }
+        }
 
-        return
     };
 
     // funzione updateTask
@@ -45,7 +51,7 @@ function useTasks() {
     };
 
 
-    return { tasks, setTasks, addTask };
+    return { tasks, setTasks, addTask, removeTask };
 }
 
 export default useTasks;
