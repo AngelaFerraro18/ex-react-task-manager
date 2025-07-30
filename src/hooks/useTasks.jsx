@@ -28,7 +28,7 @@ function useTasks() {
 
             const newTask = response.data;
 
-            setTasks(prev => [...prev, newTask]);
+            setTasks(curr => [...curr, newTask]);
             console.log(response);
             return { success: true, task: newTask }
         } catch (error) {
@@ -52,12 +52,21 @@ function useTasks() {
     };
 
     // funzione updateTask
-    function updateTask() {
-        return
+    async function updateTask(updatedTask) {
+        try {
+            console.log("Sto aggiornando la task:", updatedTask);
+
+            const response = await axios.put(`${url}/tasks/${updatedTask.id}`, updatedTask);
+            setTasks(curr => curr.map(task => task.id === updatedTask.id ? response.data : task));
+            return { success: true, task: response.data };
+        } catch (error) {
+            console.error('Qualcosa è andato storto', error.response?.data?.message);
+            return { success: false, message: error.response?.data?.message }
+        }
     };
 
 
-    return { tasks, setTasks, addTask, removeTask };
+    return { tasks, setTasks, addTask, removeTask, updateTask };
 }
 
 export default useTasks;
