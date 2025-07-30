@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function TaskRow({ task }) {
 
@@ -12,7 +13,7 @@ function TaskRow({ task }) {
     return (<>
         <div className="header-table">
 
-            <div className="cell-table">{title}</div>
+            <div className="cell-table"><Link to={`/task/${task.id}`}>{title}</Link></div>
 
             <div className="cell-table" style={statusStyle}>{status}</div>
 
