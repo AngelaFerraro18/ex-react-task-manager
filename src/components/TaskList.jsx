@@ -2,7 +2,7 @@
 // import { GlobalContext } from "../context/GlobalContext";
 import TaskRow from "./TaskRow";
 import { useGlobalContext } from "../context/GlobalContext";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 function TaskList() {
 
@@ -11,6 +11,21 @@ function TaskList() {
     //variabili di stato per ordinamento
     const [sortBy, setSortBy] = useState('CreatedAt');
     const [sortOrder, setSortOrder] = useState(1);
+
+    //variabile di stato per la ricerca
+    const [searchQuery, setSearchQuery] = useState('');
+    const debounceRef = useRef();
+
+
+    const handleSearch = useCallback((e) => {
+        const value = e.target.value;
+
+        clearTimeout(debounceRef.current);
+
+        debounceRef.current = setTimeout(() => {
+            setSearchQuery(value);
+        }, 300)
+    }, [])
 
 
     function handleSort(column) {
@@ -26,7 +41,9 @@ function TaskList() {
 
         const statusOrder = { 'To do': 0, 'Doing': 1, 'Done': 2 };
 
-        return [...tasks].sort((a, b) => {
+        const filteredTasks = tasks.filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        return filteredTasks.sort((a, b) => {
             let result = 0;
 
             if (sortBy === 'title') {
@@ -40,11 +57,15 @@ function TaskList() {
             return result * sortOrder;
         })
 
-    }, [tasks, sortBy, sortOrder]);
+    }, [tasks, sortBy, sortOrder, searchQuery]);
 
     return (<>
         <h2 className="task-list-title">Lista delle task:</h2>
         <div>
+            <input type="text"
+                placeholder="Cerca per nome..."
+                onChange={handleSearch} />
+
             <div className="header-table">
                 <div onClick={() => handleSort('title')} style={{ cursor: 'pointer' }}><strong>Nome</strong></div>
                 <div onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}><strong>Stato</strong></div>
