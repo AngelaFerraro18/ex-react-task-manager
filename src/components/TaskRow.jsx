@@ -1,7 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
 
-function TaskRow({ task }) {
+import { Link } from "react-router-dom";
+import { memo } from "react";
+
+const TaskRow = memo(({ task }) => {
 
     const { title, status, createdAt } = task;
 
@@ -21,6 +22,6 @@ function TaskRow({ task }) {
 
         </div>
     )
-}
+});
 
-export default React.memo(TaskRow);
+export default TaskRow;
