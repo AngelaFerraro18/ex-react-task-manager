@@ -57,7 +57,9 @@ function useTasks() {
             console.log("Sto aggiornando la task:", updatedTask);
 
             const response = await axios.put(`${url}/tasks/${updatedTask.id}`, updatedTask);
-            setTasks(curr => curr.map(task => task.id === updatedTask.id ? response.data : task));
+            setTasks(curr => curr.map(task => task.id === updatedTask.id ? response.data.task : task));
+            console.log(response.data.task.id);
+            console.log(response.data)
             return { success: true, task: response.data };
         } catch (error) {
             console.error('Qualcosa è andato storto', error.response?.data?.message);

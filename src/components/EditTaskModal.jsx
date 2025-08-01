@@ -34,7 +34,6 @@ function EditTaskModal({ show, onClose, task, onSave }) {
         };
 
         onSave(updatedTask);
-        onClose();
     };
 
     function handleConfirmClick() {
