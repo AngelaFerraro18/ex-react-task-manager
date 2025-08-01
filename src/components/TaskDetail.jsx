@@ -4,6 +4,7 @@ import { useGlobalContext } from "../context/GlobalContext";
 // import useTasks from "../hooks/useTasks";
 import Modal from "./Modal";
 import EditTaskModal from "./EditTaskModal";
+import dayjs from "dayjs";
 
 function TaskDetail() {
     const { id } = useParams();
@@ -38,7 +39,7 @@ function TaskDetail() {
         <h2>{task.title}</h2>
         <p>{task.description}</p>
         <p>{task.status}</p>
-        <p>{new Date(task.createdAt).toLocaleDateString()}</p>
+        <p>{dayjs(task.createdAt).format('DD/MM/YYYY')}</p>
 
         <button onClick={() => setModal(true)}>Elimina task</button>
 
