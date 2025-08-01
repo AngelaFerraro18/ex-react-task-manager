@@ -6,15 +6,26 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 function TaskList() {
 
-    const { tasks } = useGlobalContext();
+    const { tasks, removeMultipleTasks } = useGlobalContext();
 
     //variabili di stato per ordinamento
-    const [sortBy, setSortBy] = useState('CreatedAt');
+    const [sortBy, setSortBy] = useState('createdAt');
     const [sortOrder, setSortOrder] = useState(1);
 
     //variabile di stato per la ricerca
     const [searchQuery, setSearchQuery] = useState('');
     const debounceRef = useRef();
+
+    //variabile di stato per checkbox
+    const [selectedTaskIds, setSelectedTaskIds] = useState([]);
+
+    function toggleSelection(taskId) {
+        if (selectedTaskIds.includes(taskId)) {
+            setSelectedTaskIds(prev => prev.filter(id => id !== taskId));
+        } else {
+            setSelectedTaskIds(prev => [...prev, taskId]);
+        }
+    }
 
 
     const handleSearch = useCallback((e) => {
@@ -41,7 +52,9 @@ function TaskList() {
 
         const statusOrder = { 'To do': 0, 'Doing': 1, 'Done': 2 };
 
-        const filteredTasks = [...tasks].filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+        const filteredTasks = [...tasks].filter(t => t && t.title && t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        console.log('tasks', tasks)
 
         return filteredTasks.sort((a, b) => {
             let result = 0;
@@ -50,7 +63,7 @@ function TaskList() {
                 result = a.title.localeCompare(b.title);
             } else if (sortBy === 'status') {
                 result = statusOrder[a.status] - statusOrder[b.status];
-            } else if (sortBy === 'createAt') {
+            } else if (sortBy === 'createdAt') {
                 result = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
             }
 
@@ -59,12 +72,29 @@ function TaskList() {
 
     }, [tasks, sortBy, sortOrder, searchQuery]);
 
+
+    async function handleDeleteMultiple() {
+        try {
+            await removeMultipleTasks(selectedTaskIds);
+            alert('Task eliminate con successo!');
+            setSelectedTaskIds([]);
+        } catch (error) {
+            console.error(error);
+            alert(error.message)
+        }
+    }
+
     return (<>
         <h2 className="task-list-title">Lista delle task:</h2>
+
         <div>
             <input type="text"
                 placeholder="Cerca per nome..."
                 onChange={handleSearch} />
+
+            {selectedTaskIds.length > 0 && (
+                <button onClick={handleDeleteMultiple}>Elimina selezionate</button>
+            )}
 
             <div className="header-table">
                 <div onClick={() => handleSort('title')} style={{ cursor: 'pointer' }}><strong>Nome</strong></div>
@@ -73,7 +103,10 @@ function TaskList() {
             </div>
             <div className="body-table">
                 {sortedTasks.map(t =>
-                    <TaskRow key={t.id} task={t} />
+                    <TaskRow key={t.id}
+                        task={t}
+                        checked={selectedTaskIds.includes(t.id)}
+                        onToggle={toggleSelection} />
                 )}
             </div>
 

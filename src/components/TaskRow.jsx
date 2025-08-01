@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { memo } from "react";
 
-const TaskRow = memo(({ task }) => {
+const TaskRow = memo(({ task, checked, onToggle }) => {
 
     const { title, status, createdAt } = task;
 
@@ -13,6 +13,10 @@ const TaskRow = memo(({ task }) => {
 
     return (
         <div className="header-table">
+            <input type="checkbox"
+                checked={checked}
+                onChange={() => onToggle(task.id)}
+            />
 
             <div className="cell-table"><Link to={`/task/${task.id}`}>{title}</Link></div>
 

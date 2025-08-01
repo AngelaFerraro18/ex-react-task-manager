@@ -26,10 +26,10 @@ function useTasks() {
                 status
             });
 
-            const newTask = response.data;
+            const newTask = response.data.task;
 
             setTasks(curr => [...curr, newTask]);
-            console.log(response);
+            console.log(newTask);
             return { success: true, task: newTask }
         } catch (error) {
             console.error("Si è verificato un errore nella creazione della task", error);
@@ -51,6 +51,37 @@ function useTasks() {
 
     };
 
+
+    //funzione rimozione più tasks
+
+    async function removeMultipleTasks(taskIds) {
+        const deleteReq = taskIds.map(taskId => axios.delete(`${url}/tasks/${taskId}`));
+        const results = await Promise.allSettled(deleteReq);
+
+        const fullfilledDeletions = [];
+        const rejectedDeletions = [];
+
+        results.forEach((result, index) => {
+            const taskId = taskIds[index];
+
+            if (result.status === 'fulfilled' && result.value.data.success) {
+                fullfilledDeletions.push(taskId);
+            } else {
+                rejectedDeletions.push(taskId);
+            }
+
+            console.log(result)
+        })
+
+        if (fullfilledDeletions.length > 0) {
+            setTasks(prev => prev.filter(t => !fullfilledDeletions.includes(t.id)));
+        }
+
+        if (rejectedDeletions.length > 0) {
+            throw new Error(`Errore nell'eliminazione delle task con id: ${rejectedDeletions.join(", ")}`);
+        }
+    }
+
     // funzione updateTask
     async function updateTask(updatedTask) {
         try {
@@ -68,7 +99,7 @@ function useTasks() {
     };
 
 
-    return { tasks, setTasks, addTask, removeTask, updateTask };
+    return { tasks, setTasks, addTask, removeTask, updateTask, removeMultipleTasks };
 }
 
 export default useTasks;
