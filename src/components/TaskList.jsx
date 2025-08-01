@@ -41,7 +41,7 @@ function TaskList() {
 
         const statusOrder = { 'To do': 0, 'Doing': 1, 'Done': 2 };
 
-        const filteredTasks = tasks.filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+        const filteredTasks = [...tasks].filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
         return filteredTasks.sort((a, b) => {
             let result = 0;
